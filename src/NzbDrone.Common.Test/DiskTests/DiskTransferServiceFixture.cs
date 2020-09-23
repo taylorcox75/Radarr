@@ -452,6 +452,38 @@ namespace NzbDrone.Common.Test.DiskTests
         }
 
         [Test]
+        public void MoveFolder_should_detect_caseinsensitive_parents()
+        {
+            WithRealDiskProvider();
+
+            var original = GetFilledTempFolder();
+            var root = new DirectoryInfo(GetTempFilePath());
+            var source = new DirectoryInfo(root.FullName + "A/series");
+            var destination = new DirectoryInfo(root.FullName + "a/series");
+
+            Subject.TransferFolder(original.FullName, source.FullName, TransferMode.Copy);
+
+            Assert.Throws<IOException>(() => Subject.TransferFolder(source.FullName, destination.FullName, TransferMode.Move));
+        }
+
+        [Test]
+        public void MoveFolder_should_rename_caseinsensitive_folder()
+        {
+            WithRealDiskProvider();
+
+            var original = GetFilledTempFolder();
+            var root = new DirectoryInfo(GetTempFilePath());
+            var source = new DirectoryInfo(root.FullName + "A/series");
+            var destination = new DirectoryInfo(root.FullName + "A/Series");
+
+            Subject.TransferFolder(original.FullName, source.FullName, TransferMode.Copy);
+
+            Subject.TransferFolder(source.FullName, destination.FullName, TransferMode.Move);
+
+            source.FullName.GetActualCasing().Should().Be(destination.FullName);
+        }
+
+        [Test]
         public void should_throw_if_destination_is_readonly()
         {
             Mocker.GetMock<IDiskProvider>()
@@ -751,6 +783,10 @@ namespace NzbDrone.Common.Test.DiskTests
             Mocker.GetMock<IDiskProvider>()
                 .Setup(v => v.CreateFolder(It.IsAny<string>()))
                 .Callback<string>(v => Directory.CreateDirectory(v));
+
+            Mocker.GetMock<IDiskProvider>()
+                .Setup(v => v.MoveFolder(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()))
+                .Callback<string, string>((v, r) => Directory.Move(v, r));
 
             Mocker.GetMock<IDiskProvider>()
                 .Setup(v => v.DeleteFolder(It.IsAny<string>(), It.IsAny<bool>()))
