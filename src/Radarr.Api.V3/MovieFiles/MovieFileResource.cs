@@ -26,6 +26,8 @@ namespace Radarr.Api.V3.MovieFiles
         public string OriginalFilePath { get; set; }
         public bool QualityCutoffNotMet { get; set; }
         public List<Language> Languages { get; set; }
+        public string ReleaseGroup { get; set; }
+        public string Edition { get; set; }
     }
 
     public static class MovieFileResourceMapper
@@ -51,6 +53,8 @@ namespace Radarr.Api.V3.MovieFiles
                 IndexerFlags = model.IndexerFlags,
                 Quality = model.Quality,
                 Languages = model.Languages,
+                ReleaseGroup = model.ReleaseGroup,
+                Edition = model.Edition,
                 MediaInfo = model.MediaInfo.ToResource(model.SceneName),
                 OriginalFilePath = model.OriginalFilePath
             };
@@ -76,6 +80,8 @@ namespace Radarr.Api.V3.MovieFiles
                 IndexerFlags = model.IndexerFlags,
                 Quality = model.Quality,
                 Languages = model.Languages,
+                Edition = model.Edition,
+                ReleaseGroup = model.ReleaseGroup,
                 MediaInfo = model.MediaInfo.ToResource(model.SceneName),
                 OriginalFilePath = model.OriginalFilePath
             };
@@ -101,6 +107,8 @@ namespace Radarr.Api.V3.MovieFiles
                 IndexerFlags = model.IndexerFlags,
                 Quality = model.Quality,
                 Languages = model.Languages,
+                Edition = model.Edition,
+                ReleaseGroup = model.ReleaseGroup,
                 MediaInfo = model.MediaInfo.ToResource(model.SceneName),
                 QualityCutoffNotMet = upgradableSpecification.QualityCutoffNotMet(movie.Profile, model.Quality),
                 OriginalFilePath = model.OriginalFilePath
